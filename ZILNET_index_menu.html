@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZILNET</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f7f7f7;
+      color: #111;
+    }
+
+    button, input, textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    /* HEADER */
+
+    header {
+      height: 64px;
+      background: #fff;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* THREE-LINE MENU */
+
+    .menu-button {
+      width: 44px;
+      height: 44px;
+      border: 1px solid #ddd;
+      background: #fff;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .menu-button span {
+      display: block;
+      width: 21px;
+      height: 2px;
+      background: #111;
+      border-radius: 2px;
+    }
+
+    /* MENU */
+
+    .menu-panel {
+      position: fixed;
+      top: 74px;
+      right: 18px;
+      width: 245px;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 14px;
+      padding: 8px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+      display: none;
+      z-index: 200;
+    }
+
+    .menu-panel.open {
+      display: block;
+    }
+
+    .menu-profile {
+      padding: 14px;
+      border-bottom: 1px solid #eee;
+      margin-bottom: 6px;
+    }
+
+    .menu-profile strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .menu-profile span {
+      color: #777;
+      font-size: 13px;
+    }
+
+    .menu-item {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      padding: 12px 14px;
+      text-align: left;
+      border-radius: 9px;
+    }
+
+    .menu-item:hover {
+      background: #f2f2f2;
+    }
+
+    /* MAIN */
+
+    main {
+      width: min(1100px, calc(100% - 32px));
+      margin: 28px auto;
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 24px;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 18px;
+    }
+
+    .hero h1 {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 18px;
+    }
+
+    .primary-btn {
+      border: 0;
+      border-radius: 8px;
+      padding: 10px 16px;
+      background: #111;
+      color: #fff;
+    }
+
+    .secondary-btn {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px 16px;
+      background: #fff;
+      color: #111;
+    }
+
+    /* COMPOSER */
+
+    .composer textarea {
+      width: 100%;
+      min-height: 90px;
+      resize: vertical;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 13px;
+      outline: none;
+    }
+
+    .composer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+      gap: 12px;
+    }
+
+    /* POSTS */
+
+    .feed-title {
+      font-size: 22px;
+      margin-bottom: 14px;
+    }
+
+    .post-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #111;
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+    }
+
+    .post-user {
+      font-weight: 700;
+    }
+
+    .post-time {
+      color: #888;
+      font-size: 13px;
+      margin-top: 3px;
+    }
+
+    .post-text {
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .post-actions {
+      display: flex;
+      gap: 8px;
+      border-top: 1px solid #eee;
+      padding-top: 12px;
+    }
+
+    .post-actions button {
+      background: transparent;
+      border: 0;
+      padding: 8px 10px;
+      border-radius: 7px;
+    }
+
+    .post-actions button:hover {
+      background: #f2f2f2;
+    }
+
+    /* JOBS */
+
+    aside h2 {
+      font-size: 18px;
+      margin-bottom: 14px;
+    }
+
+    .job {
+      padding: 14px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .job:last-child {
+      border-bottom: 0;
+    }
+
+    .job h3 {
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
+
+    .job p {
+      color: #666;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .job button {
+      margin-top: 10px;
+      width: 100%;
+      border: 1px solid #ccc;
+      background: #fff;
+      border-radius: 7px;
+      padding: 8px;
+    }
+
+    .empty {
+      text-align: center;
+      color: #777;
+      padding: 30px 10px;
+    }
+
+    /* MOBILE */
+
+    @media (max-width: 800px) {
+      header {
+        padding: 0 15px;
+      }
+
+      main {
+        grid-template-columns: 1fr;
+        width: min(100% - 20px, 650px);
+        margin-bottom: 30px;
+      }
+
+      aside {
+        display: none;
+      }
+
+      .hero h1 {
+        font-size: 30px;
+      }
+
+      .menu-panel {
+        top: 70px;
+        right: 10px;
+        width: min(245px, calc(100% - 20px));
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+
+  <header>
+    <div class="logo">ZILNET</div>
+
+    <div class="header-right">
+
+      <!-- THREE LINES -->
+
+      <button
+        class="menu-button"
+        id="menuButton"
+        onclick="toggleMenu()"
+        aria-label="Open menu"
+        aria-expanded="false"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+    </div>
+  </header>
+
+
+  <!-- MENU -->
+
+  <div class="menu-panel" id="menuPanel">
+
+    <div class="menu-profile">
+      <strong>Your Profile</strong>
+      <span>Sign in to access your profile</span>
+    </div>
+
+    <button class="menu-item" onclick="goHome()">Home</button>
+    <button class="menu-item" onclick="showSection('Discover')">Discover</button>
+    <button class="menu-item" onclick="focusComposer()">Create Post</button>
+    <button class="menu-item" onclick="showJobs()">Jobs & Opportunities</button>
+    <button class="menu-item" onclick="showSection('Messages')">Messages</button>
+    <button class="menu-item" onclick="showSection('Notifications')">Notifications</button>
+    <button class="menu-item" onclick="showSection('Profile')">Profile</button>
+    <button class="menu-item" onclick="showSection('Settings')">Settings</button>
+
+  </div>
+
+
+  <!-- MAIN -->
+
+  <main>
+
+    <section>
+
+      <div class="card hero">
+        <h1>Build. Share. Connect.</h1>
+
+        <p>
+          ZILNET is a professional social platform where people can
+          share their work, discover opportunities, connect with others,
+          and build their professional identity.
+        </p>
+
+        <button class="primary-btn" onclick="focusComposer()">
+          Create a post
+        </button>
+      </div>
+
+
+      <!-- CREATE POST -->
+
+      <div class="card composer" id="composer">
+
+        <h2 style="margin-bottom:12px;">
+          Create a post
+        </h2>
+
+        <textarea
+          id="postText"
+          placeholder="Share something with ZILNET..."
+        ></textarea>
+
+        <div class="composer-bottom">
+
+          <span style="color:#777;font-size:14px;">
+            Share your thoughts, work, or opportunities.
+          </span>
+
+          <button
+            class="primary-btn"
+            onclick="createPost()"
+          >
+            Post
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- FEED -->
+
+      <h2 class="feed-title">
+        Latest posts
+      </h2>
+
+      <div id="feed">
+
+        <div class="card empty">
+          No posts yet. Be the first to share something.
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- RIGHT SIDE -->
+
+    <aside>
+
+      <div class="card" id="jobs">
+
+        <h2>Opportunities</h2>
+
+        <div class="job">
+          <h3>Graphic Designer</h3>
+          <p>
+            Looking for a designer for a creative digital project.
+          </p>
+          <button onclick="applyJob('Graphic Designer')">
+            Apply
+          </button>
+        </div>
+
+        <div class="job">
+          <h3>Web Developer</h3>
+          <p>
+            Opportunity for someone interested in building web projects.
+          </p>
+          <button onclick="applyJob('Web Developer')">
+            Apply
+          </button>
+        </div>
+
+        <div class="job">
+          <h3>3D Artist</h3>
+          <p>
+            Create original 3D assets for a digital project.
+          </p>
+          <button onclick="applyJob('3D Artist')">
+            Apply
+          </button>
+        </div>
+
+        <button
+          class="primary-btn"
+          style="width:100%;margin-top:14px;"
+          onclick="showSection('Create a Job')"
+        >
+          Post an opportunity
+        </button>
+
+      </div>
+
+
+      <div class="card">
+
+        <h2>About ZILNET</h2>
+
+        <p style="color:#666;line-height:1.6;">
+          A place to showcase skills, share work, discover jobs,
+          and connect with people.
+        </p>
+
+      </div>
+
+    </aside>
+
+  </main>
+
+
+  <script>
+
+    function toggleMenu() {
+      const panel = document.getElementById("menuPanel");
+      const button = document.getElementById("menuButton");
+
+      const isOpen = panel.classList.toggle("open");
+
+      button.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    }
+
+
+    document.addEventListener("click", function(event) {
+      const panel = document.getElementById("menuPanel");
+      const button = document.getElementById("menuButton");
+
+      if (
+        panel.classList.contains("open") &&
+        !panel.contains(event.target) &&
+        !button.contains(event.target)
+      ) {
+        panel.classList.remove("open");
+        button.setAttribute("aria-expanded", "false");
+      }
+    });
+
+
+    function closeMenu() {
+      document.getElementById("menuPanel").classList.remove("open");
+      document.getElementById("menuButton").setAttribute(
+        "aria-expanded",
+        "false"
+      );
+    }
+
+
+    function focusComposer() {
+      closeMenu();
+
+      const composer = document.getElementById("composer");
+
+      composer.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+
+      setTimeout(function() {
+        document.getElementById("postText").focus();
+      }, 400);
+    }
+
+
+    function showJobs() {
+      closeMenu();
+
+      document.getElementById("jobs").scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+    }
+
+
+    function goHome() {
+      closeMenu();
+
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }
+
+
+    function showSection(section) {
+      closeMenu();
+
+      alert(
+        section +
+        " will be connected to the real ZILNET backend in the next steps."
+      );
+    }
+
+
+    function applyJob(job) {
+      alert(
+        "Application for " +
+        job +
+        " will be connected to the D1 database in the backend step."
+      );
+    }
+
+
+    function createPost() {
+
+      const text =
+        document.getElementById("postText").value.trim();
+
+      if (!text) {
+        alert("Write something before posting.");
+        return;
+      }
+
+      const feed =
+        document.getElementById("feed");
+
+      const empty =
+        feed.querySelector(".empty");
+
+      if (empty) {
+        empty.remove();
+      }
+
+
+      const post =
+        document.createElement("article");
+
+      post.className = "card";
+
+
+      const header =
+        document.createElement("div");
+
+      header.className = "post-header";
+
+
+      const avatar =
+        document.createElement("div");
+
+      avatar.className = "avatar";
+      avatar.textContent = "Z";
+
+
+      const userInfo =
+        document.createElement("div");
+
+
+      const username =
+        document.createElement("div");
+
+      username.className = "post-user";
+      username.textContent = "You";
+
+
+      const time =
+        document.createElement("div");
+
+      time.className = "post-time";
+      time.textContent = "Just now";
+
+
+      userInfo.appendChild(username);
+      userInfo.appendChild(time);
+
+      header.appendChild(avatar);
+      header.appendChild(userInfo);
+
+
+      const body =
+        document.createElement("div");
+
+      body.className = "post-text";
+
+      body.textContent = text;
+
+
+      const actions =
+        document.createElement("div");
+
+      actions.className = "post-actions";
+
+
+      ["Like", "Comment", "Share", "Save"].forEach(
+        function(action) {
+
+          const button =
+            document.createElement("button");
+
+          button.textContent = action;
+
+          button.onclick = function() {
+            alert(
+              action +
+              " will be connected to D1 in the next backend step."
+            );
+          };
+
+          actions.appendChild(button);
+
+        }
+      );
+
+
+      post.appendChild(header);
+      post.appendChild(body);
+      post.appendChild(actions);
+
+      feed.prepend(post);
+
+      document.getElementById("postText").value = "";
+
+    }
+
+  </script>
+
+</body>
+</html>
