@@ -1,0 +1,12 @@
+name = "zilnet"
+main = "worker.js"
+compatibility_date = "2026-09-18"
+
+[assets]
+directory = "./"
+binding = "ASSETS"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "zilnet-db"
+database_id = "18585d78-44e4-4023-ab48-5109fcfa0130"
