@@ -1,0 +1,3245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZILNET</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f7f7f7;
+      color: #111;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    header {
+      height: 64px;
+      background: #fff;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .menu-button {
+      width: 44px;
+      height: 44px;
+      border: 1px solid #ddd;
+      background: #fff;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .menu-button span {
+      display: block;
+      width: 21px;
+      height: 2px;
+      background: #111;
+      border-radius: 2px;
+    }
+
+    .menu-panel {
+      position: fixed;
+      top: 74px;
+      right: 18px;
+      width: 270px;
+      max-height: calc(100vh - 90px);
+      overflow-y: auto;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 14px;
+      padding: 8px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12);
+      display: none;
+      z-index: 200;
+    }
+
+    .menu-panel.open {
+      display: block;
+    }
+
+    .menu-profile {
+      padding: 14px;
+      border-bottom: 1px solid #eee;
+      margin-bottom: 6px;
+    }
+
+    .menu-profile strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .menu-profile span {
+      color: #777;
+      font-size: 13px;
+      word-break: break-word;
+    }
+
+    .menu-item {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      padding: 12px 14px;
+      text-align: left;
+      border-radius: 9px;
+    }
+
+    .menu-item:hover {
+      background: #f2f2f2;
+    }
+
+    .menu-divider {
+      height: 1px;
+      background: #eee;
+      margin: 6px 0;
+    }
+
+    main {
+      width: min(1100px, calc(100% - 32px));
+      margin: 28px auto;
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 24px;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 18px;
+    }
+
+    .hero h1 {
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 18px;
+    }
+
+    .primary-btn {
+      border: 0;
+      border-radius: 8px;
+      padding: 10px 16px;
+      background: #111;
+      color: #fff;
+    }
+
+    .primary-btn:hover {
+      opacity: 0.88;
+    }
+
+    .secondary-btn {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px 16px;
+      background: #fff;
+      color: #111;
+    }
+
+    .secondary-btn:hover {
+      background: #f4f4f4;
+    }
+
+    .composer textarea {
+      width: 100%;
+      min-height: 90px;
+      resize: vertical;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 13px;
+      outline: none;
+    }
+
+    .composer textarea:focus,
+    .auth-input:focus,
+    .search-input:focus {
+      border-color: #111;
+    }
+
+    .composer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+      gap: 12px;
+    }
+
+    .feed-title {
+      font-size: 22px;
+      margin-bottom: 14px;
+    }
+
+    .post-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .avatar {
+      width: 42px;
+      height: 42px;
+      min-width: 42px;
+      border-radius: 50%;
+      background: #111;
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      overflow: hidden;
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .post-user {
+      font-weight: 700;
+    }
+
+    .post-username {
+      color: #777;
+      font-size: 13px;
+      margin-top: 3px;
+    }
+
+    .post-time {
+      color: #888;
+      font-size: 13px;
+      margin-top: 3px;
+    }
+
+    .post-text {
+      line-height: 1.6;
+      margin-bottom: 16px;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .post-actions {
+      display: flex;
+      gap: 8px;
+      border-top: 1px solid #eee;
+      padding-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    .post-actions button {
+      background: transparent;
+      border: 0;
+      padding: 8px 10px;
+      border-radius: 7px;
+    }
+
+    .post-actions button:hover {
+      background: #f2f2f2;
+    }
+
+    .post-actions button.liked {
+      font-weight: 700;
+    }
+
+    aside h2 {
+      font-size: 18px;
+      margin-bottom: 14px;
+    }
+
+    .job {
+      padding: 14px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .job:last-child {
+      border-bottom: 0;
+    }
+
+    .job h3 {
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
+
+    .job p {
+      color: #666;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .job button {
+      margin-top: 10px;
+      width: 100%;
+      border: 1px solid #ccc;
+      background: #fff;
+      border-radius: 7px;
+      padding: 8px;
+    }
+
+    .job button:hover {
+      background: #f2f2f2;
+    }
+
+    .empty {
+      text-align: center;
+      color: #777;
+      padding: 30px 10px;
+    }
+
+    .loading {
+      text-align: center;
+      color: #777;
+      padding: 30px 10px;
+    }
+
+    .status {
+      font-size: 14px;
+      margin-top: 10px;
+      min-height: 18px;
+    }
+
+    .status.error {
+      color: #b00020;
+    }
+
+    .status.success {
+      color: #176b2c;
+    }
+
+    /* AUTH MODAL */
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.42);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 500;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal-card {
+      width: min(430px, 100%);
+      max-height: calc(100vh - 40px);
+      overflow-y: auto;
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .modal-close {
+      width: 36px;
+      height: 36px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: #fff;
+      font-size: 20px;
+    }
+
+    .auth-tabs {
+      display: flex;
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 20px;
+    }
+
+    .auth-tab {
+      flex: 1;
+      border: 0;
+      background: transparent;
+      padding: 12px;
+      font-weight: 600;
+      border-bottom: 2px solid transparent;
+    }
+
+    .auth-tab.active {
+      border-bottom-color: #111;
+    }
+
+    .auth-field {
+      margin-bottom: 14px;
+    }
+
+    .auth-field label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 7px;
+    }
+
+    .auth-input {
+      width: 100%;
+      border: 1px solid #ccc;
+      border-radius: 9px;
+      padding: 11px 12px;
+      outline: none;
+    }
+
+    .auth-submit {
+      width: 100%;
+      margin-top: 5px;
+    }
+
+    .auth-switch {
+      text-align: center;
+      margin-top: 15px;
+      color: #666;
+      font-size: 14px;
+    }
+
+    .auth-switch button {
+      border: 0;
+      background: transparent;
+      text-decoration: underline;
+      padding: 0;
+    }
+
+    /* SEARCH / DISCOVER */
+
+    .search-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 15px;
+    }
+
+    .search-input {
+      flex: 1;
+      border: 1px solid #ccc;
+      border-radius: 9px;
+      padding: 11px 12px;
+      outline: none;
+    }
+
+    .search-result {
+      padding: 14px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .search-result:last-child {
+      border-bottom: 0;
+    }
+
+    .search-result strong {
+      display: block;
+    }
+
+    .search-result span {
+      color: #777;
+      font-size: 14px;
+    }
+
+    /* PROFILE */
+
+    .profile-top {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .profile-avatar {
+      width: 72px;
+      height: 72px;
+      min-width: 72px;
+      border-radius: 50%;
+      background: #111;
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-size: 24px;
+      font-weight: 700;
+      overflow: hidden;
+    }
+
+    .profile-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .profile-name {
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .profile-username {
+      color: #777;
+      margin-top: 4px;
+    }
+
+    .profile-bio {
+      color: #555;
+      line-height: 1.6;
+      margin-bottom: 15px;
+      white-space: pre-wrap;
+    }
+
+    .profile-stats {
+      display: flex;
+      gap: 25px;
+      color: #555;
+      font-size: 14px;
+    }
+
+    /* COMMENTS */
+
+    .comments-box {
+      display: none;
+      margin-top: 12px;
+      border-top: 1px solid #eee;
+      padding-top: 12px;
+    }
+
+    .comments-box.open {
+      display: block;
+    }
+
+    .comment-form {
+      display: flex;
+      gap: 8px;
+    }
+
+    .comment-input {
+      flex: 1;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 9px;
+      outline: none;
+    }
+
+    .comment {
+      margin-top: 10px;
+      padding: 9px;
+      background: #f7f7f7;
+      border-radius: 8px;
+    }
+
+    .comment strong {
+      font-size: 14px;
+    }
+
+    .comment p {
+      margin-top: 4px;
+      color: #555;
+      font-size: 14px;
+      white-space: pre-wrap;
+    }
+
+    /* TOAST */
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 25px;
+      transform: translateX(-50%);
+      background: #111;
+      color: #fff;
+      padding: 11px 16px;
+      border-radius: 9px;
+      display: none;
+      z-index: 700;
+      max-width: calc(100% - 30px);
+      text-align: center;
+    }
+
+    .toast.show {
+      display: block;
+    }
+
+    @media (max-width: 800px) {
+      header {
+        padding: 0 15px;
+      }
+
+      main {
+        grid-template-columns: 1fr;
+        width: min(100% - 20px, 650px);
+        margin-bottom: 30px;
+      }
+
+      aside {
+        display: none;
+      }
+
+      .hero h1 {
+        font-size: 30px;
+      }
+
+      .menu-panel {
+        top: 70px;
+        right: 10px;
+        width: min(270px, calc(100% - 20px));
+      }
+
+      .composer-bottom {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .composer-bottom button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">ZILNET</div>
+
+  <div class="header-right">
+    <button
+      class="menu-button"
+      id="menuButton"
+      onclick="toggleMenu()"
+      aria-label="Open menu"
+      aria-expanded="false"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+</header>
+
+
+<!-- MENU -->
+
+<div class="menu-panel" id="menuPanel">
+
+  <div class="menu-profile" id="menuProfile">
+    <strong>Welcome to ZILNET</strong>
+    <span>Anyone can browse public posts.</span>
+  </div>
+
+  <button class="menu-item" onclick="goHome()">Home</button>
+  <button class="menu-item" onclick="openDiscover()">Discover</button>
+  <button class="menu-item" onclick="focusComposer()">Create Post</button>
+  <button class="menu-item" onclick="showJobs()">Jobs & Opportunities</button>
+  <button class="menu-item" onclick="openMessages()">Messages</button>
+  <button class="menu-item" onclick="openNotifications()">Notifications</button>
+  <button class="menu-item" onclick="openProfile()">Profile</button>
+  <button class="menu-item" onclick="openSettings()">Settings</button>
+
+  <div class="menu-divider"></div>
+
+  <button
+    class="menu-item"
+    id="authMenuButton"
+    onclick="openAuth()"
+  >
+    Sign in / Create account
+  </button>
+
+</div>
+
+
+<!-- MAIN -->
+
+<main>
+
+  <section>
+
+    <!-- HERO -->
+
+    <div class="card hero">
+      <h1>Build. Share. Connect.</h1>
+
+      <p>
+        ZILNET is a professional social platform where people can
+        share their work, discover opportunities, connect with others,
+        and build their professional identity.
+      </p>
+
+      <button class="primary-btn" onclick="focusComposer()">
+        Create a post
+      </button>
+    </div>
+
+
+    <!-- DISCOVER -->
+
+    <div class="card" id="discoverSection" style="display:none;">
+
+      <h2>Discover</h2>
+
+      <p style="color:#666;line-height:1.6;margin-top:8px;">
+        Search ZILNET users by username or user ID.
+      </p>
+
+      <div class="search-row">
+        <input
+          class="search-input"
+          id="searchInput"
+          placeholder="Search username or user ID..."
+          autocomplete="off"
+        >
+
+        <button
+          class="primary-btn"
+          onclick="searchUsers()"
+        >
+          Search
+        </button>
+      </div>
+
+      <div id="searchResults" style="margin-top:15px;">
+      </div>
+
+    </div>
+
+
+    <!-- CREATE POST -->
+
+    <div class="card composer" id="composer">
+
+      <h2 style="margin-bottom:12px;">
+        Create a post
+      </h2>
+
+      <textarea
+        id="postText"
+        placeholder="Share something with ZILNET..."
+      ></textarea>
+
+      <div class="composer-bottom">
+
+        <span style="color:#777;font-size:14px;">
+          Share your thoughts, work, or opportunities.
+        </span>
+
+        <button
+          class="primary-btn"
+          id="postButton"
+          onclick="createPost()"
+        >
+          Post
+        </button>
+
+      </div>
+
+      <div id="postStatus" class="status"></div>
+
+    </div>
+
+
+    <!-- PROFILE -->
+
+    <div class="card" id="profileSection" style="display:none;">
+      <div id="profileView"></div>
+    </div>
+
+
+    <!-- NOTIFICATIONS -->
+
+    <div class="card" id="notificationsSection" style="display:none;">
+
+      <h2>Notifications</h2>
+
+      <div id="notificationsList">
+        <div class="loading">
+          Loading notifications...
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- SETTINGS -->
+
+    <div class="card" id="settingsSection" style="display:none;">
+
+      <h2>Settings</h2>
+
+      <p style="color:#666;line-height:1.6;margin-top:10px;">
+        Your account settings will be expanded as more ZILNET
+        backend features are added.
+      </p>
+
+      <button
+        class="secondary-btn"
+        style="margin-top:15px;"
+        onclick="logout()"
+        id="settingsLogout"
+      >
+        Log out
+      </button>
+
+    </div>
+
+
+    <!-- FEED -->
+
+    <h2 class="feed-title">
+      Latest posts
+    </h2>
+
+    <div id="feed">
+
+      <div class="loading">
+        Loading posts...
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- RIGHT SIDE -->
+
+  <aside>
+
+    <div class="card" id="jobs">
+
+      <h2>Opportunities</h2>
+
+      <div id="jobsList">
+
+        <div class="loading">
+          Loading opportunities...
+        </div>
+
+      </div>
+
+      <button
+        class="primary-btn"
+        style="width:100%;margin-top:14px;"
+        onclick="createJobPrompt()"
+      >
+        Post an opportunity
+      </button>
+
+    </div>
+
+
+    <div class="card">
+
+      <h2>About ZILNET</h2>
+
+      <p style="color:#666;line-height:1.6;">
+        A place to showcase skills, share work, discover jobs,
+        and connect with people.
+      </p>
+
+    </div>
+
+  </aside>
+
+</main>
+
+
+<!-- AUTH MODAL -->
+
+<div class="modal-overlay" id="authModal">
+
+  <div class="modal-card">
+
+    <div class="modal-header">
+      <h2 id="authTitle">Sign in</h2>
+
+      <button
+        class="modal-close"
+        onclick="closeAuth()"
+        aria-label="Close"
+      >
+        ×
+      </button>
+    </div>
+
+    <div class="auth-tabs">
+
+      <button
+        class="auth-tab active"
+        id="loginTab"
+        onclick="setAuthMode('login')"
+      >
+        Sign in
+      </button>
+
+      <button
+        class="auth-tab"
+        id="signupTab"
+        onclick="setAuthMode('signup')"
+      >
+        Create account
+      </button>
+
+    </div>
+
+
+    <form id="authForm" onsubmit="submitAuth(event)">
+
+      <div
+        class="auth-field"
+        id="displayNameField"
+        style="display:none;"
+      >
+        <label for="displayName">
+          Display name
+        </label>
+
+        <input
+          class="auth-input"
+          id="displayName"
+          type="text"
+          maxlength="80"
+          autocomplete="name"
+        >
+      </div>
+
+
+      <div class="auth-field">
+
+        <label for="username">
+          Username
+        </label>
+
+        <input
+          class="auth-input"
+          id="username"
+          type="text"
+          maxlength="30"
+          required
+          autocomplete="username"
+          placeholder="yourusername"
+        >
+
+      </div>
+
+
+      <div
+        class="auth-field"
+        id="emailField"
+        style="display:none;"
+      >
+
+        <label for="email">
+          Email
+        </label>
+
+        <input
+          class="auth-input"
+          id="email"
+          type="email"
+          autocomplete="email"
+          placeholder="you@example.com"
+        >
+
+      </div>
+
+
+      <div class="auth-field">
+
+        <label for="password">
+          Password
+        </label>
+
+        <input
+          class="auth-input"
+          id="password"
+          type="password"
+          minlength="8"
+          required
+          autocomplete="current-password"
+          placeholder="At least 8 characters"
+        >
+
+      </div>
+
+
+      <button
+        class="primary-btn auth-submit"
+        id="authButton"
+        type="submit"
+      >
+        Sign in
+      </button>
+
+      <div id="authStatus" class="status"></div>
+
+    </form>
+
+
+    <div class="auth-switch">
+
+      <span id="authSwitchText">
+        Don't have an account?
+      </span>
+
+      <button
+        id="authSwitchButton"
+        onclick="toggleAuthMode()"
+      >
+        Create one
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- TOAST -->
+
+<div class="toast" id="toast"></div>
+
+
+<script>
+
+  /*
+    ZILNET FRONTEND
+    Connected to the Cloudflare Worker API.
+
+    The same domain is used for the API:
+      /api/signup
+      /api/login
+      /api/logout
+      /api/me
+      /api/posts
+      /api/like
+      /api/comments
+      /api/jobs
+      /api/jobs/apply
+      /api/follow
+      /api/profile
+      /api/notifications
+      /api/search
+  */
+
+
+  let currentUser = null;
+  let authMode = "login";
+
+
+  /* -----------------------------
+     BASIC HELPERS
+  ----------------------------- */
+
+  function showToast(message) {
+
+    const toast = document.getElementById("toast");
+
+    toast.textContent = message;
+    toast.classList.add("show");
+
+    clearTimeout(window.toastTimer);
+
+    window.toastTimer = setTimeout(function() {
+      toast.classList.remove("show");
+    }, 3000);
+  }
+
+
+  function setStatus(elementId, message, type) {
+
+    const element = document.getElementById(elementId);
+
+    if (!element) {
+      return;
+    }
+
+    element.textContent = message || "";
+    element.className = "status";
+
+    if (type) {
+      element.classList.add(type);
+    }
+  }
+
+
+  async function apiRequest(url, options = {}) {
+
+    const response = await fetch(url, {
+      credentials: "include",
+      ...options,
+      headers: {
+        "Content-Type": "application/json",
+        ...(options.headers || {})
+      }
+    });
+
+    let data = null;
+
+    try {
+      data = await response.json();
+    } catch (error) {
+      data = {};
+    }
+
+    if (!response.ok) {
+
+      throw new Error(
+        data.error ||
+        data.message ||
+        "Something went wrong."
+      );
+
+    }
+
+    return data;
+  }
+
+
+  /* -----------------------------
+     MENU
+  ----------------------------- */
+
+  function toggleMenu() {
+
+    const panel =
+      document.getElementById("menuPanel");
+
+    const button =
+      document.getElementById("menuButton");
+
+    const isOpen =
+      panel.classList.toggle("open");
+
+    button.setAttribute(
+      "aria-expanded",
+      isOpen ? "true" : "false"
+    );
+  }
+
+
+  document.addEventListener("click", function(event) {
+
+    const panel =
+      document.getElementById("menuPanel");
+
+    const button =
+      document.getElementById("menuButton");
+
+    if (
+      panel.classList.contains("open") &&
+      !panel.contains(event.target) &&
+      !button.contains(event.target)
+    ) {
+
+      panel.classList.remove("open");
+
+      button.setAttribute(
+        "aria-expanded",
+        "false"
+      );
+    }
+
+  });
+
+
+  function closeMenu() {
+
+    document
+      .getElementById("menuPanel")
+      .classList.remove("open");
+
+    document
+      .getElementById("menuButton")
+      .setAttribute(
+        "aria-expanded",
+        "false"
+      );
+  }
+
+
+  /* -----------------------------
+     AUTH
+  ----------------------------- */
+
+  function openAuth(mode = "login") {
+
+    closeMenu();
+
+    setAuthMode(mode);
+
+    document
+      .getElementById("authModal")
+      .classList.add("open");
+
+    setTimeout(function() {
+
+      document
+        .getElementById("username")
+        .focus();
+
+    }, 100);
+
+  }
+
+
+  function closeAuth() {
+
+    document
+      .getElementById("authModal")
+      .classList.remove("open");
+
+    setStatus(
+      "authStatus",
+      "",
+      ""
+    );
+  }
+
+
+  function setAuthMode(mode) {
+
+    authMode = mode;
+
+    const loginTab =
+      document.getElementById("loginTab");
+
+    const signupTab =
+      document.getElementById("signupTab");
+
+    const displayNameField =
+      document.getElementById("displayNameField");
+
+    const emailField =
+      document.getElementById("emailField");
+
+    const displayName =
+      document.getElementById("displayName");
+
+    const email =
+      document.getElementById("email");
+
+    const title =
+      document.getElementById("authTitle");
+
+    const button =
+      document.getElementById("authButton");
+
+    const switchText =
+      document.getElementById("authSwitchText");
+
+    const switchButton =
+      document.getElementById("authSwitchButton");
+
+
+    if (mode === "signup") {
+
+      loginTab.classList.remove("active");
+      signupTab.classList.add("active");
+
+      displayNameField.style.display = "block";
+      emailField.style.display = "block";
+
+      displayName.required = true;
+      email.required = true;
+
+      title.textContent = "Create account";
+      button.textContent = "Create account";
+
+      switchText.textContent =
+        "Already have an account?";
+
+      switchButton.textContent =
+        "Sign in";
+
+    } else {
+
+      signupTab.classList.remove("active");
+      loginTab.classList.add("active");
+
+      displayNameField.style.display = "none";
+      emailField.style.display = "none";
+
+      displayName.required = false;
+      email.required = false;
+
+      title.textContent = "Sign in";
+      button.textContent = "Sign in";
+
+      switchText.textContent =
+        "Don't have an account?";
+
+      switchButton.textContent =
+        "Create one";
+    }
+
+    setStatus(
+      "authStatus",
+      "",
+      ""
+    );
+  }
+
+
+  function toggleAuthMode() {
+
+    if (authMode === "login") {
+      setAuthMode("signup");
+    } else {
+      setAuthMode("login");
+    }
+  }
+
+
+  async function submitAuth(event) {
+
+    event.preventDefault();
+
+    const username =
+      document
+        .getElementById("username")
+        .value
+        .trim();
+
+    const password =
+      document
+        .getElementById("password")
+        .value;
+
+    const displayName =
+      document
+        .getElementById("displayName")
+        .value
+        .trim();
+
+    const email =
+      document
+        .getElementById("email")
+        .value
+        .trim();
+
+
+    if (!username || !password) {
+
+      setStatus(
+        "authStatus",
+        "Enter your username and password.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    if (password.length < 8) {
+
+      setStatus(
+        "authStatus",
+        "Password must be at least 8 characters.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    const button =
+      document.getElementById("authButton");
+
+    button.disabled = true;
+
+    button.textContent =
+      authMode === "signup"
+        ? "Creating account..."
+        : "Signing in...";
+
+
+    try {
+
+      let data;
+
+
+      if (authMode === "signup") {
+
+        if (!displayName || !email) {
+
+          throw new Error(
+            "Enter your display name and email."
+          );
+
+        }
+
+
+        data = await apiRequest(
+          "/api/signup",
+          {
+            method: "POST",
+            body: JSON.stringify({
+              username,
+              displayName,
+              email,
+              password
+            })
+          }
+        );
+
+      } else {
+
+        data = await apiRequest(
+          "/api/login",
+          {
+            method: "POST",
+            body: JSON.stringify({
+              username,
+              password
+            })
+          }
+        );
+
+      }
+
+
+      currentUser =
+        data.user || data;
+
+
+      closeAuth();
+
+      updateLoggedInUI();
+
+      showToast(
+        authMode === "signup"
+          ? "Your ZILNET account was created."
+          : "Welcome back to ZILNET."
+      );
+
+
+      await loadPosts();
+      await loadJobs();
+
+    } catch (error) {
+
+      setStatus(
+        "authStatus",
+        error.message,
+        "error"
+      );
+
+    } finally {
+
+      button.disabled = false;
+
+      button.textContent =
+        authMode === "signup"
+          ? "Create account"
+          : "Sign in";
+    }
+  }
+
+
+  async function logout() {
+
+    try {
+
+      await apiRequest(
+        "/api/logout",
+        {
+          method: "POST",
+          body: "{}"
+        }
+      );
+
+      currentUser = null;
+
+      updateLoggedInUI();
+
+      showToast("You have been logged out.");
+
+      hidePrivateSections();
+
+    } catch (error) {
+
+      showToast(error.message);
+
+    }
+
+  }
+
+
+  async function checkSession() {
+
+    try {
+
+      const data =
+        await apiRequest("/api/me");
+
+      currentUser =
+        data.user || data || null;
+
+    } catch (error) {
+
+      currentUser = null;
+
+    }
+
+    updateLoggedInUI();
+  }
+
+
+  function updateLoggedInUI() {
+
+    const profile =
+      document.getElementById("menuProfile");
+
+    const authButton =
+      document.getElementById("authMenuButton");
+
+    if (currentUser) {
+
+      const displayName =
+        currentUser.display_name ||
+        currentUser.displayName ||
+        currentUser.username ||
+        "ZILNET user";
+
+      const username =
+        currentUser.username ||
+        "";
+
+      profile.innerHTML = `
+        <strong>${escapeHTML(displayName)}</strong>
+        <span>@${escapeHTML(username)}</span>
+      `;
+
+      authButton.textContent = "Log out";
+
+      authButton.onclick = function() {
+        logout();
+      };
+
+    } else {
+
+      profile.innerHTML = `
+        <strong>Welcome to ZILNET</strong>
+        <span>Anyone can browse public posts.</span>
+      `;
+
+      authButton.textContent =
+        "Sign in / Create account";
+
+      authButton.onclick = function() {
+        openAuth();
+      };
+
+    }
+  }
+
+
+  function requireLogin() {
+
+    if (currentUser) {
+      return true;
+    }
+
+    openAuth("login");
+
+    showToast(
+      "Please sign in or create an account first."
+    );
+
+    return false;
+  }
+
+
+  /* -----------------------------
+     HOME
+  ----------------------------- */
+
+  function goHome() {
+
+    closeMenu();
+
+    hidePrivateSections();
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+
+  }
+
+
+  function hidePrivateSections() {
+
+    document
+      .getElementById("discoverSection")
+      .style.display = "none";
+
+    document
+      .getElementById("profileSection")
+      .style.display = "none";
+
+    document
+      .getElementById("notificationsSection")
+      .style.display = "none";
+
+    document
+      .getElementById("settingsSection")
+      .style.display = "none";
+  }
+
+
+  function focusComposer() {
+
+    closeMenu();
+
+    if (!requireLogin()) {
+      return;
+    }
+
+    hidePrivateSections();
+
+    const composer =
+      document.getElementById("composer");
+
+    composer.scrollIntoView({
+      behavior: "smooth",
+      block: "center"
+    });
+
+    setTimeout(function() {
+
+      document
+        .getElementById("postText")
+        .focus();
+
+    }, 400);
+
+  }
+
+
+  function showJobs() {
+
+    closeMenu();
+
+    hidePrivateSections();
+
+    document
+      .getElementById("jobs")
+      .scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+  }
+
+
+  /* -----------------------------
+     POSTS
+  ----------------------------- */
+
+  async function loadPosts() {
+
+    const feed =
+      document.getElementById("feed");
+
+    feed.innerHTML = `
+      <div class="loading">
+        Loading posts...
+      </div>
+    `;
+
+
+    try {
+
+      const data =
+        await apiRequest("/api/posts");
+
+
+      const posts =
+        Array.isArray(data)
+          ? data
+          : (
+              data.posts ||
+              data.results ||
+              []
+            );
+
+
+      if (!posts.length) {
+
+        feed.innerHTML = `
+          <div class="card empty">
+            No posts yet. Be the first to share something.
+          </div>
+        `;
+
+        return;
+      }
+
+
+      feed.innerHTML = "";
+
+      posts.forEach(function(post) {
+
+        feed.appendChild(
+          createPostElement(post)
+        );
+
+      });
+
+    } catch (error) {
+
+      feed.innerHTML = `
+        <div class="card empty">
+          Unable to load posts right now.
+        </div>
+      `;
+
+      console.error(error);
+    }
+  }
+
+
+  async function createPost() {
+
+    if (!requireLogin()) {
+      return;
+    }
+
+
+    const textarea =
+      document.getElementById("postText");
+
+    const text =
+      textarea.value.trim();
+
+
+    if (!text) {
+
+      setStatus(
+        "postStatus",
+        "Write something before posting.",
+        "error"
+      );
+
+      return;
+    }
+
+
+    const button =
+      document.getElementById("postButton");
+
+    button.disabled = true;
+    button.textContent = "Posting...";
+
+    setStatus(
+      "postStatus",
+      "",
+      ""
+    );
+
+
+    try {
+
+      await apiRequest(
+        "/api/posts",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            content: text
+          })
+        }
+      );
+
+
+      textarea.value = "";
+
+      showToast(
+        "Your post was published."
+      );
+
+
+      await loadPosts();
+
+    } catch (error) {
+
+      setStatus(
+        "postStatus",
+        error.message,
+        "error"
+      );
+
+    } finally {
+
+      button.disabled = false;
+      button.textContent = "Post";
+
+    }
+  }
+
+
+  function createPostElement(post) {
+
+    const article =
+      document.createElement("article");
+
+    article.className = "card";
+
+
+    const user =
+      post.username ||
+      post.user_username ||
+      "ZILNET user";
+
+
+    const displayName =
+      post.display_name ||
+      post.displayName ||
+      user;
+
+
+    const text =
+      post.content ||
+      post.text ||
+      "";
+
+
+    const postId =
+      post.id ||
+      post.post_id;
+
+
+    const createdAt =
+      post.created_at ||
+      post.createdAt;
+
+
+    const initials =
+      getInitials(displayName);
+
+
+    const header =
+      document.createElement("div");
+
+    header.className =
+      "post-header";
+
+
+    const avatar =
+      document.createElement("div");
+
+    avatar.className =
+      "avatar";
+
+    avatar.textContent =
+      initials;
+
+
+    const userInfo =
+      document.createElement("div");
+
+
+    const name =
+      document.createElement("div");
+
+    name.className =
+      "post-user";
+
+    name.textContent =
+      displayName;
+
+
+    const usernameElement =
+      document.createElement("div");
+
+    usernameElement.className =
+      "post-username";
+
+    usernameElement.textContent =
+      "@" + user;
+
+
+    const time =
+      document.createElement("div");
+
+    time.className =
+      "post-time";
+
+    time.textContent =
+      formatDate(createdAt);
+
+
+    userInfo.appendChild(name);
+    userInfo.appendChild(usernameElement);
+    userInfo.appendChild(time);
+
+    header.appendChild(avatar);
+    header.appendChild(userInfo);
+
+
+    const body =
+      document.createElement("div");
+
+    body.className =
+      "post-text";
+
+    body.textContent =
+      text;
+
+
+    const actions =
+      document.createElement("div");
+
+    actions.className =
+      "post-actions";
+
+
+    const likeButton =
+      document.createElement("button");
+
+    const likeCount =
+      Number(
+        post.like_count ||
+        post.likes ||
+        0
+      );
+
+
+    const liked =
+      Boolean(
+        post.liked ||
+        post.user_liked
+      );
+
+
+    likeButton.textContent =
+      liked
+        ? "Liked " + likeCount
+        : "Like " + likeCount;
+
+
+    if (liked) {
+      likeButton.classList.add("liked");
+    }
+
+
+    likeButton.onclick =
+      function() {
+
+        if (!requireLogin()) {
+          return;
+        }
+
+        likePost(
+          postId,
+          likeButton
+        );
+      };
+
+
+    const commentButton =
+      document.createElement("button");
+
+    commentButton.textContent =
+      "Comment";
+
+
+    const shareButton =
+      document.createElement("button");
+
+    shareButton.textContent =
+      "Share";
+
+
+    shareButton.onclick =
+      function() {
+
+        sharePost(postId);
+      };
+
+
+    const saveButton =
+      document.createElement("button");
+
+    saveButton.textContent =
+      "Save";
+
+
+    saveButton.onclick =
+      function() {
+
+        if (!requireLogin()) {
+          return;
+        }
+
+        showToast(
+          "Save will be connected when the saved-post endpoint is added to the Worker."
+        );
+      };
+
+
+    commentButton.onclick =
+      function() {
+
+        if (!requireLogin()) {
+          return;
+        }
+
+        commentsBox.classList.toggle("open");
+
+      };
+
+
+    actions.appendChild(likeButton);
+    actions.appendChild(commentButton);
+    actions.appendChild(shareButton);
+    actions.appendChild(saveButton);
+
+
+    const commentsBox =
+      document.createElement("div");
+
+    commentsBox.className =
+      "comments-box";
+
+
+    const commentForm =
+      document.createElement("div");
+
+    commentForm.className =
+      "comment-form";
+
+
+    const commentInput =
+      document.createElement("input");
+
+    commentInput.className =
+      "comment-input";
+
+    commentInput.placeholder =
+      "Write a comment...";
+
+
+    const commentSend =
+      document.createElement("button");
+
+    commentSend.className =
+      "primary-btn";
+
+    commentSend.textContent =
+      "Send";
+
+
+    commentSend.onclick =
+      async function() {
+
+        const comment =
+          commentInput.value.trim();
+
+        if (!comment) {
+          return;
+        }
+
+
+        if (!requireLogin()) {
+          return;
+        }
+
+
+        commentSend.disabled = true;
+
+
+        try {
+
+          await apiRequest(
+            "/api/comments",
+            {
+              method: "POST",
+              body: JSON.stringify({
+                postId: postId,
+                content: comment
+              })
+            }
+          );
+
+
+          commentInput.value = "";
+
+          showToast(
+            "Comment added."
+          );
+
+        } catch (error) {
+
+          showToast(
+            error.message
+          );
+
+        } finally {
+
+          commentSend.disabled = false;
+
+        }
+      };
+
+
+    commentForm.appendChild(
+      commentInput
+    );
+
+    commentForm.appendChild(
+      commentSend
+    );
+
+
+    commentsBox.appendChild(
+      commentForm
+    );
+
+
+    article.appendChild(header);
+    article.appendChild(body);
+    article.appendChild(actions);
+    article.appendChild(commentsBox);
+
+
+    return article;
+  }
+
+
+  async function likePost(postId, button) {
+
+    if (!postId) {
+      showToast("This post has no valid ID.");
+      return;
+    }
+
+
+    button.disabled = true;
+
+
+    try {
+
+      const data =
+        await apiRequest(
+          "/api/like",
+          {
+            method: "POST",
+            body: JSON.stringify({
+              postId
+            })
+          }
+        );
+
+
+      const liked =
+        Boolean(
+          data.liked ??
+          data.isLiked ??
+          data.like
+        );
+
+
+      const count =
+        Number(
+          data.likeCount ??
+          data.likes ??
+          0
+        );
+
+
+      if (liked) {
+
+        button.textContent =
+          "Liked " + count;
+
+        button.classList.add("liked");
+
+      } else {
+
+        button.textContent =
+          "Like " + count;
+
+        button.classList.remove("liked");
+
+      }
+
+    } catch (error) {
+
+      showToast(
+        error.message
+      );
+
+    } finally {
+
+      button.disabled = false;
+
+    }
+  }
+
+
+  async function sharePost(postId) {
+
+    const url =
+      window.location.origin +
+      "/?post=" +
+      encodeURIComponent(postId);
+
+
+    try {
+
+      if (
+        navigator.clipboard &&
+        navigator.clipboard.writeText
+      ) {
+
+        await navigator.clipboard.writeText(url);
+
+        showToast(
+          "Post link copied."
+        );
+
+      } else {
+
+        showToast(
+          url
+        );
+
+      }
+
+    } catch (error) {
+
+      showToast(
+        "Post link: " + url
+      );
+
+    }
+  }
+
+
+  /* -----------------------------
+     JOBS
+  ----------------------------- */
+
+  async function loadJobs() {
+
+    const jobsList =
+      document.getElementById("jobsList");
+
+    jobsList.innerHTML = `
+      <div class="loading">
+        Loading opportunities...
+      </div>
+    `;
+
+
+    try {
+
+      const data =
+        await apiRequest("/api/jobs");
+
+
+      const jobs =
+        Array.isArray(data)
+          ? data
+          : (
+              data.jobs ||
+              data.results ||
+              []
+            );
+
+
+      if (!jobs.length) {
+
+        jobsList.innerHTML = `
+          <div class="empty">
+            No opportunities have been posted yet.
+          </div>
+        `;
+
+        return;
+      }
+
+
+      jobsList.innerHTML = "";
+
+
+      jobs.forEach(function(job) {
+
+        const wrapper =
+          document.createElement("div");
+
+        wrapper.className =
+          "job";
+
+
+        const title =
+          document.createElement("h3");
+
+        title.textContent =
+          job.title ||
+          job.name ||
+          "Opportunity";
+
+
+        const description =
+          document.createElement("p");
+
+        description.textContent =
+          job.description ||
+          "No description provided.";
+
+
+        const button =
+          document.createElement("button");
+
+        button.textContent =
+          "Apply";
+
+
+        button.onclick =
+          function() {
+
+            applyJob(
+              job.id,
+              job.title ||
+              job.name ||
+              "Opportunity"
+            );
+
+          };
+
+
+        wrapper.appendChild(title);
+        wrapper.appendChild(description);
+        wrapper.appendChild(button);
+
+        jobsList.appendChild(wrapper);
+
+      });
+
+
+    } catch (error) {
+
+      jobsList.innerHTML = `
+        <div class="empty">
+          Unable to load opportunities.
+        </div>
+      `;
+
+      console.error(error);
+    }
+  }
+
+
+  async function applyJob(jobId, title) {
+
+    if (!requireLogin()) {
+      return;
+    }
+
+
+    try {
+
+      await apiRequest(
+        "/api/jobs/apply",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            jobId
+          })
+        }
+      );
+
+
+      showToast(
+        "Application submitted for " +
+        title +
+        "."
+      );
+
+    } catch (error) {
+
+      showToast(
+        error.message
+      );
+
+    }
+  }
+
+
+  async function createJobPrompt() {
+
+    if (!requireLogin()) {
+      return;
+    }
+
+
+    const title =
+      prompt(
+        "Opportunity title:"
+      );
+
+
+    if (!title || !title.trim()) {
+      return;
+    }
+
+
+    const description =
+      prompt(
+        "Describe the opportunity:"
+      );
+
+
+    if (!description || !description.trim()) {
+      return;
+    }
+
+
+    try {
+
+      await apiRequest(
+        "/api/jobs",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            title: title.trim(),
+            description: description.trim()
+          })
+        }
+      );
+
+
+      showToast(
+        "Opportunity posted."
+      );
+
+
+      await loadJobs();
+
+    } catch (error) {
+
+      showToast(
+        error.message
+      );
+
+    }
+  }
+
+
+  /* -----------------------------
+     DISCOVER / SEARCH
+  ----------------------------- */
+
+  function openDiscover() {
+
+    closeMenu();
+
+    hidePrivateSections();
+
+    const section =
+      document.getElementById(
+        "discoverSection"
+      );
+
+    section.style.display =
+      "block";
+
+
+    section.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+
+
+    setTimeout(function() {
+
+      document
+        .getElementById("searchInput")
+        .focus();
+
+    }, 400);
+  }
+
+
+  async function searchUsers() {
+
+    const input =
+      document.getElementById(
+        "searchInput"
+      );
+
+
+    const query =
+      input.value.trim();
+
+
+    const results =
+      document.getElementById(
+        "searchResults"
+      );
+
+
+    if (!query) {
+
+      results.innerHTML = `
+        <div class="empty">
+          Enter a username or user ID.
+        </div>
+      `;
+
+      return;
+    }
+
+
+    results.innerHTML = `
+      <div class="loading">
+        Searching...
+      </div>
+    `;
+
+
+    try {
+
+      const data =
+        await apiRequest(
+          "/api/search?q=" +
+          encodeURIComponent(query)
+        );
+
+
+      const users =
+        Array.isArray(data)
+          ? data
+          : (
+              data.users ||
+              data.results ||
+              []
+            );
+
+
+      if (!users.length) {
+
+        results.innerHTML = `
+          <div class="empty">
+            No users found.
+          </div>
+        `;
+
+        return;
+      }
+
+
+      results.innerHTML = "";
+
+
+      users.forEach(function(user) {
+
+        const item =
+          document.createElement("div");
+
+        item.className =
+          "search-result";
+
+
+        const name =
+          document.createElement("strong");
+
+        name.textContent =
+          user.display_name ||
+          user.displayName ||
+          user.username ||
+          "ZILNET user";
+
+
+        const username =
+          document.createElement("span");
+
+        username.textContent =
+          "@" +
+          (
+            user.username ||
+            ""
+          );
+
+
+        item.appendChild(name);
+        item.appendChild(username);
+
+
+        item.onclick =
+          function() {
+
+            openUserProfile(
+              user.username
+            );
+
+          };
+
+
+        item.style.cursor =
+          "pointer";
+
+
+        results.appendChild(item);
+
+      });
+
+
+    } catch (error) {
+
+      results.innerHTML = `
+        <div class="empty">
+          ${escapeHTML(error.message)}
+        </div>
+      `;
+
+    }
+  }
+
+
+  /* -----------------------------
+     PROFILE
+  ----------------------------- */
+
+  async function openProfile() {
+
+    closeMenu();
+
+    if (!requireLogin()) {
+      return;
+    }
+
+    hidePrivateSections();
+
+    const section =
+      document.getElementById(
+        "profileSection"
+      );
+
+    section.style.display =
+      "block";
+
+
+    section.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+
+
+    await loadOwnProfile();
+  }
+
+
+  async function loadOwnProfile() {
+
+    if (!currentUser) {
+      return;
+    }
+
+
+    const username =
+      currentUser.username;
+
+
+    await openUserProfile(
+      username,
+      false
+    );
+  }
+
+
+  async function openUserProfile(
+    username,
+    scroll = true
+  ) {
+
+    if (!username) {
+      return;
+    }
+
+
+    hidePrivateSections();
+
+
+    const section =
+      document.getElementById(
+        "profileSection"
+      );
+
+    const view =
+      document.getElementById(
+        "profileView"
+      );
+
+
+    section.style.display =
+      "block";
+
+
+    view.innerHTML = `
+      <div class="loading">
+        Loading profile...
+      </div>
+    `;
+
+
+    if (scroll) {
+
+      section.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+
+    }
+
+
+    try {
+
+      const data =
+        await apiRequest(
+          "/api/profile?username=" +
+          encodeURIComponent(username)
+        );
+
+
+      const profile =
+        data.user ||
+        data.profile ||
+        data;
+
+
+      const displayName =
+        profile.display_name ||
+        profile.displayName ||
+        profile.username ||
+        "ZILNET user";
+
+
+      const bio =
+        profile.bio ||
+        "No bio yet.";
+
+
+      const followers =
+        Number(
+          profile.followers_count ||
+          profile.followers ||
+          0
+        );
+
+
+      const following =
+        Number(
+          profile.following_count ||
+          profile.following ||
+          0
+        );
+
+
+      const initials =
+        getInitials(displayName);
+
+
+      view.innerHTML = "";
+
+
+      const top =
+        document.createElement("div");
+
+      top.className =
+        "profile-top";
+
+
+      const avatar =
+        document.createElement("div");
+
+      avatar.className =
+        "profile-avatar";
+
+      avatar.textContent =
+        initials;
+
+
+      const info =
+        document.createElement("div");
+
+
+      const name =
+        document.createElement("div");
+
+      name.className =
+        "profile-name";
+
+      name.textContent =
+        displayName;
+
+
+      const user =
+        document.createElement("div");
+
+      user.className =
+        "profile-username";
+
+      user.textContent =
+        "@" +
+        (
+          profile.username ||
+          username
+        );
+
+
+      info.appendChild(name);
+      info.appendChild(user);
+
+
+      top.appendChild(avatar);
+      top.appendChild(info);
+
+
+      const bioElement =
+        document.createElement("div");
+
+      bioElement.className =
+        "profile-bio";
+
+      bioElement.textContent =
+        bio;
+
+
+      const stats =
+        document.createElement("div");
+
+      stats.className =
+        "profile-stats";
+
+
+      const followerText =
+        document.createElement("span");
+
+      followerText.textContent =
+        followers +
+        " followers";
+
+
+      const followingText =
+        document.createElement("span");
+
+      followingText.textContent =
+        following +
+        " following";
+
+
+      stats.appendChild(
+        followerText
+      );
+
+      stats.appendChild(
+        followingText
+      );
+
+
+      view.appendChild(top);
+      view.appendChild(bioElement);
+      view.appendChild(stats);
+
+
+      if (
+        currentUser &&
+        currentUser.username &&
+        currentUser.username !==
+        (
+          profile.username ||
+          username
+        )
+      ) {
+
+        const followButton =
+          document.createElement("button");
+
+        followButton.className =
+          "primary-btn";
+
+        followButton.style.marginTop =
+          "18px";
+
+        followButton.textContent =
+          profile.following
+            ? "Unfollow"
+            : "Follow";
+
+
+        followButton.onclick =
+          async function() {
+
+            try {
+
+              const result =
+                await apiRequest(
+                  "/api/follow",
+                  {
+                    method: "POST",
+                    body: JSON.stringify({
+                      username:
+                        profile.username ||
+                        username
+                    })
+                  }
+                );
+
+
+              followButton.textContent =
+                result.following
+                  ? "Unfollow"
+                  : "Follow";
+
+
+              showToast(
+                result.following
+                  ? "Following."
+                  : "Unfollowed."
+              );
+
+            } catch (error) {
+
+              showToast(
+                error.message
+              );
+
+            }
+
+          };
+
+
+        view.appendChild(
+          followButton
+        );
+      }
+
+
+    } catch (error) {
+
+      view.innerHTML = `
+        <div class="empty">
+          ${escapeHTML(error.message)}
+        </div>
+      `;
+
+    }
+  }
+
+
+  /* -----------------------------
+     NOTIFICATIONS
+  ----------------------------- */
+
+  async function openNotifications() {
+
+    closeMenu();
+
+    if (!requireLogin()) {
+      return;
+    }
+
+    hidePrivateSections();
+
+    const section =
+      document.getElementById(
+        "notificationsSection"
+      );
+
+    section.style.display =
+      "block";
+
+
+    section.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+
+
+    const list =
+      document.getElementById(
+        "notificationsList"
+      );
+
+
+    list.innerHTML = `
+      <div class="loading">
+        Loading notifications...
+      </div>
+    `;
+
+
+    try {
+
+      const data =
+        await apiRequest(
+          "/api/notifications"
+        );
+
+
+      const notifications =
+        Array.isArray(data)
+          ? data
+          : (
+              data.notifications ||
+              data.results ||
+              []
+            );
+
+
+      if (!notifications.length) {
+
+        list.innerHTML = `
+          <div class="empty">
+            No notifications yet.
+          </div>
+        `;
+
+        return;
+      }
+
+
+      list.innerHTML = "";
+
+
+      notifications.forEach(
+        function(notification) {
+
+          const item =
+            document.createElement("div");
+
+          item.className =
+            "search-result";
+
+
+          item.textContent =
+            notification.message ||
+            notification.content ||
+            "You have a new notification.";
+
+
+          list.appendChild(item);
+
+        }
+      );
+
+
+    } catch (error) {
+
+      list.innerHTML = `
+        <div class="empty">
+          ${escapeHTML(error.message)}
+        </div>
+      `;
+
+    }
+  }
+
+
+  /* -----------------------------
+     SETTINGS
+  ----------------------------- */
+
+  function openSettings() {
+
+    closeMenu();
+
+    if (!requireLogin()) {
+      return;
+    }
+
+    hidePrivateSections();
+
+    const section =
+      document.getElementById(
+        "settingsSection"
+      );
+
+    section.style.display =
+      "block";
+
+
+    section.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }
+
+
+  /* -----------------------------
+     MESSAGES
+  ----------------------------- */
+
+  function openMessages() {
+
+    closeMenu();
+
+    if (!requireLogin()) {
+      return;
+    }
+
+
+    showToast(
+      "Messages will be connected when the chat and message endpoints are added to the Worker."
+    );
+  }
+
+
+  /* -----------------------------
+     UTILITIES
+  ----------------------------- */
+
+  function getInitials(name) {
+
+    if (!name) {
+      return "Z";
+    }
+
+
+    const parts =
+      name
+        .trim()
+        .split(/\s+/)
+        .slice(0, 2);
+
+
+    return parts
+      .map(function(part) {
+        return part.charAt(0).toUpperCase();
+      })
+      .join("");
+  }
+
+
+  function formatDate(value) {
+
+    if (!value) {
+      return "Recently";
+    }
+
+
+    const date =
+      new Date(value);
+
+
+    if (Number.isNaN(date.getTime())) {
+      return "Recently";
+    }
+
+
+    const now =
+      Date.now();
+
+
+    const difference =
+      Math.floor(
+        (now - date.getTime()) / 1000
+      );
+
+
+    if (difference < 60) {
+      return "Just now";
+    }
+
+
+    if (difference < 3600) {
+
+      return (
+        Math.floor(difference / 60) +
+        " min ago"
+      );
+
+    }
+
+
+    if (difference < 86400) {
+
+      return (
+        Math.floor(difference / 3600) +
+        " hr ago"
+      );
+
+    }
+
+
+    return date.toLocaleDateString();
+  }
+
+
+  function escapeHTML(value) {
+
+    return String(value ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+
+  /* -----------------------------
+     START ZILNET
+  ----------------------------- */
+
+  async function startZilnet() {
+
+    updateLoggedInUI();
+
+    await checkSession();
+
+    await Promise.all([
+      loadPosts(),
+      loadJobs()
+    ]);
+
+  }
+
+
+  startZilnet();
+
+</script>
+
+</body>
+</html>
